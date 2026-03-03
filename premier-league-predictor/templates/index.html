@@ -828,26 +828,26 @@
     <script>
         const TEAM_DATA = {
             // Premier League 2025-26
-            "Arsenal": {"color": "#EF0107", "badge": "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg"},
-            "Aston Villa": {"color": "#670E36", "badge": "https://upload.wikimedia.org/wikipedia/en/6/6b/Aston_Villa_FC.svg"},
-            "Bournemouth": {"color": "#B50127", "badge": "https://upload.wikimedia.org/wikipedia/en/e/e5/AFC_Bournemouth.svg"},
-            "Brentford": {"color": "#E30613", "badge": "https://upload.wikimedia.org/wikipedia/en/2/2a/Brentford_FC.svg"},
-            "Brighton": {"color": "#0057B8", "badge": "https://upload.wikimedia.org/wikipedia/en/f/fd/Brighton_and_Hove_Albion_logo.svg"},
-            "Burnley": {"color": "#6CABDD", "badge": "https://upload.wikimedia.org/wikipedia/en/0/02/Burnley_FC.svg"},
-            "Chelsea": {"color": "#034694", "badge": "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg"},
-            "Crystal Palace": {"color": "#1B458F", "badge": "https://upload.wikimedia.org/wikipedia/en/a/a7/Crystal_Palace_FC.svg"},
-            "Everton": {"color": "#003399", "badge": "https://upload.wikimedia.org/wikipedia/en/7/7d/Everton_FC_Logo.svg"},
-            "Fulham": {"color": "#CC0000", "badge": "https://upload.wikimedia.org/wikipedia/en/1/1f/Fulham_FC.svg"},
-            "Leeds": {"color": "#FFCD00", "badge": "https://upload.wikimedia.org/wikipedia/en/2/2a/Leeds_United_FC.svg"},
-            "Liverpool": {"color": "#C8102E", "badge": "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg"},
-            "Man City": {"color": "#6CABDD", "badge": "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg"},
-            "Man United": {"color": "#DA291C", "badge": "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg"},
-            "Newcastle": {"color": "#241F20", "badge": "https://upload.wikimedia.org/wikipedia/en/5/56/Newcastle_United_Logo.svg"},
-            "Nottingham Forest": {"color": "#DD0000", "badge": "https://upload.wikimedia.org/wikipedia/en/e/e5/Nottingham_Forest_FC.svg"},
-            "Sunderland": {"color": "#DA291C", "badge": "https://upload.wikimedia.org/wikipedia/en/6/6c/Sunderland_AFC.svg"},
-            "Tottenham": {"color": "#132257", "badge": "https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg"},
-            "West Ham": {"color": "#7A263A", "badge": "https://upload.wikimedia.org/wikipedia/en/c/c2/West_Ham_United_FC_logo.svg"},
-            "Wolves": {"color": "#FDB912", "badge": "https://upload.wikimedia.org/wikipedia/en/f/fc/Wolverhampton_Wanderers.svg"},
+            "Arsenal": {"color": "#EF0107", "emoji": "🔴"},
+            "Aston Villa": {"color": "#670E36", "emoji": "🔵"},
+            "Bournemouth": {"color": "#B50127", "emoji": "🍒"},
+            "Brentford": {"color": "#E30613", "emoji": "🐝"},
+            "Brighton": {"color": "#0057B8", "emoji": "🌊"},
+            "Burnley": {"color": "#6CABDD", "emoji": "🔥"},
+            "Chelsea": {"color": "#034694", "emoji": "💙"},
+            "Crystal Palace": {"color": "#1B458F", "emoji": "🦅"},
+            "Everton": {"color": "#003399", "emoji": "🔵"},
+            "Fulham": {"color": "#CC0000", "emoji": "⚫"},
+            "Leeds": {"color": "#FFCD00", "emoji": "🦌"},
+            "Liverpool": {"color": "#C8102E", "emoji": "🔴"},
+            "Man City": {"color": "#6CABDD", "emoji": "🔵"},
+            "Man United": {"color": "#DA291C", "emoji": "🔴"},
+            "Newcastle": {"color": "#241F20", "emoji": "⚫"},
+            "Nottingham Forest": {"color": "#DD0000", "emoji": "🌲"},
+            "Sunderland": {"color": "#DA291C", "emoji": "🐱"},
+            "Tottenham": {"color": "#132257", "emoji": "🐓"},
+            "West Ham": {"color": "#7A263A", "emoji": "⚒️"},
+            "Wolves": {"color": "#FDB912", "emoji": "🐺"},
             // La Liga
             "Barcelona": {"color": "#A50044", "emoji": "🔵🔴"},
             "Real Madrid": {"color": "#FFFFFF", "emoji": "⚪"},
@@ -981,16 +981,16 @@
             const awayBadge = document.getElementById('awayBadge');
             
             if (homeTeam && TEAM_DATA[homeTeam]) {
-                homeBadge.style.background = '#fff';
-                homeBadge.innerHTML = `<img src="${TEAM_DATA[homeTeam].badge}" alt="${homeTeam}" style="width:50px;height:50px;object-fit:contain" onerror="this.style.display='none';this.parentNode.style.background='${TEAM_DATA[homeTeam].color}';this.parentNode.textContent='${homeTeam.charAt(0)}'">`;
+                homeBadge.style.background = TEAM_DATA[homeTeam].color || '#666';
+                homeBadge.innerHTML = TEAM_DATA[homeTeam].emoji || homeTeam.charAt(0);
             } else {
                 homeBadge.style.background = '#ccc';
                 homeBadge.textContent = '?';
             }
             
             if (awayTeam && TEAM_DATA[awayTeam]) {
-                awayBadge.style.background = '#fff';
-                awayBadge.innerHTML = `<img src="${TEAM_DATA[awayTeam].badge}" alt="${awayTeam}" style="width:50px;height:50px;object-fit:contain" onerror="this.style.display='none';this.parentNode.style.background='${TEAM_DATA[awayTeam].color}';this.parentNode.textContent='${awayTeam.charAt(0)}'">`;
+                awayBadge.style.background = TEAM_DATA[awayTeam].color || '#666';
+                awayBadge.innerHTML = TEAM_DATA[awayTeam].emoji || awayTeam.charAt(0);
             } else {
                 awayBadge.style.background = '#ccc';
                 awayBadge.textContent = '?';
@@ -1149,12 +1149,12 @@
                     const homeBadge = document.getElementById('homeBadge');
                     const awayBadge = document.getElementById('awayBadge');
                     if (TEAM_DATA[homeTeam]) {
-                        homeBadge.style.background = '#fff';
-                        homeBadge.innerHTML = `<img src="${TEAM_DATA[homeTeam].badge}" alt="${homeTeam}" style="width:50px;height:50px;object-fit:contain">`;
+                        homeBadge.style.background = TEAM_DATA[homeTeam].color || '#666';
+                        homeBadge.innerHTML = TEAM_DATA[homeTeam].emoji || homeTeam.charAt(0);
                     }
                     if (TEAM_DATA[awayTeam]) {
-                        awayBadge.style.background = '#fff';
-                        awayBadge.innerHTML = `<img src="${TEAM_DATA[awayTeam].badge}" alt="${awayTeam}" style="width:50px;height:50px;object-fit:contain">`;
+                        awayBadge.style.background = TEAM_DATA[awayTeam].color || '#666';
+                        awayBadge.innerHTML = TEAM_DATA[awayTeam].emoji || awayTeam.charAt(0);
                     }
                     
                     result.classList.add('show');
