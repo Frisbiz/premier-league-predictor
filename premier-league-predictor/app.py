@@ -165,9 +165,9 @@ TEAM_COLORS = {
 # Premier League teams
 premier_league_teams = [
     "Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton",
-    "Chelsea", "Crystal Palace", "Everton", "Fulham", "Ipswich",
-    "Leicester", "Liverpool", "Man City", "Man United", "Newcastle",
-    "Nottingham Forest", "Southampton", "Tottenham", "West Ham", "Wolves"
+    "Burnley", "Chelsea", "Crystal Palace", "Everton", "Fulham",
+    "Leeds", "Liverpool", "Man City", "Man United", "Newcastle",
+    "Nottingham Forest", "Sunderland", "Tottenham", "West Ham", "Wolves"
 ]
 
 # Leagues
@@ -210,10 +210,10 @@ def fetch_data(league="Premier League"):
     code = league_info["code"]
     
     seasons = [
-        # Last 8 seasons for more data
+        # Last 9 seasons including current
         ("1617", "2016-17", "16"), ("1718", "2017-18", "17"), ("1819", "2018-19", "18"), ("1920", "2019-20", "19"),
         ("2021", "2020-21", "20"), ("2122", "2021-22", "21"), 
-        ("2223", "2022-23", "22"), ("2324", "2023-24", "23"), ("2425", "2024-25", "24"),
+        ("2223", "2022-23", "22"), ("2324", "2023-24", "23"), ("2425", "2024-25", "24"), ("2526", "2025-26", "25"),
     ]
     
     all_data = []
@@ -231,6 +231,15 @@ def fetch_data(league="Premier League"):
     
     if all_data:
         combined = pd.concat(all_data, ignore_index=True)
+        
+        # Normalize team names
+        name_map = {
+            "Nott'm Forest": "Nottingham Forest",
+            "Nottingham": "Nottingham Forest",
+        }
+        combined['HomeTeam'] = combined['HomeTeam'].replace(name_map)
+        combined['AwayTeam'] = combined['AwayTeam'].replace(name_map)
+        
         print(f"Total {league}: {len(combined)} matches")
         return combined
     return None
