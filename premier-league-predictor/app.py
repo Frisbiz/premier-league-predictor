@@ -383,8 +383,19 @@ def get_cached_data(league):
     model = EnhancedPoissonModel()
     model.fit(df, available_teams)
     team_stats = calculate_team_stats(df, available_teams)
-    # Skip standings for now - too slow
+    # Simple predicted standings based on team strength
     standings = []
+    if model and team_stats:
+        # Rank by expected strength (attack * home advantage factor)
+        team_strength = []
+        for team in available_teams[:10]:
+            if team in team_stats:
+                stats = team_stats[team]
+                strength = (stats.get('home_gs', 1.5) + stats.get('away_gs', 1.2)) / 2
+                team_strength.append({'team': team, 'points': strength * 30, 'gd': stats.get('home_gs', 1.5) - stats.get('home_gc', 1.3)})
+        
+        team_strength.sort(key=lambda x: (-x['points'], -x['gd']))
+        standings = team_strength[:10]
     
     data = {'model': model, 'df': df, 'teams': available_teams, 'team_stats': team_stats, 'standings': standings}
     
@@ -498,8 +509,17 @@ def get_standings():
     if cache_data is None:
         return jsonify({'error': 'Could not load data'}), 500
     
+    # Handle both old tuple format and new dict format
+    standings = cache_data.get('standings', [])
+    if standings and isinstance(standings[0], tuple):
+        # Old format: [(team, {points, gd, gf}), ...]
+        formatted = [{'team': t, **s} for t, s in standings[:10]]
+    else:
+        # New format: [{team, points, gd}, ...]
+        formatted = standings[:10]
+    
     return jsonify({
-        'standings': [{'team': t, **s} for t, s in cache_data['standings'][:10]],
+        'standings': formatted,
         'league': league,
         'last_updated': cache_time.strftime('%Y-%m-%d %H:%M') if cache_time else None
     })

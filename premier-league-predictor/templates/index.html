@@ -76,13 +76,25 @@
         }
 
         select.league-select {
-            padding: 8px 15px;
-            font-size: 0.9em;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            background: var(--bg-secondary);
+            padding: 10px 20px;
+            font-size: 0.95em;
+            border: 2px solid var(--border);
+            border-radius: 25px;
+            background: var(--bg-card);
             color: var(--text-primary);
             cursor: pointer;
+            min-width: 200px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .header-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            padding: 0 20px;
         }
 
         .data-badge {
