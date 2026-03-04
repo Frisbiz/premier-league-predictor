@@ -540,20 +540,37 @@
             margin-bottom: 15px;
             color: var(--text-primary);
             text-align: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .standings-card h3:hover {
+            color: var(--accent);
+        }
+
+        .standings-card h3::after {
+            content: ' ▼';
+            font-size: 0.8em;
+        }
+
+        .standings-card.collapsed h3::after {
+            content: ' ▶';
+        }
+
+        .standings-card.collapsed .standings-table {
+            display: none;
         }
 
         .standings-table {
             width: 100%;
             border-collapse: collapse;
-            max-height: 400px;
-            overflow-y: auto;
-            display: block;
+            min-width: 320px;
         }
 
         .standings-table th, .standings-table td {
-            padding: 10px 8px;
+            padding: 12px 15px;
             text-align: left;
-            font-size: 0.85em;
+            font-size: 0.9em;
         }
 
         .standings-table th {
@@ -927,6 +944,11 @@
                 console.error('Error loading teams:', error);
             }
         }
+
+        // Toggle standings collapse
+        document.querySelector('.standings-card h3').addEventListener('click', function() {
+            document.querySelector('.standings-card').classList.toggle('collapsed');
+        });
 
         async function loadStandings() {
             try {
