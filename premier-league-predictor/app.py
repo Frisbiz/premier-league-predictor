@@ -539,10 +539,10 @@ def get_standings():
     standings = cache_data.get('standings', [])
     if standings and isinstance(standings[0], tuple):
         # Old format: [(team, {points, gd, gf}), ...]
-        formatted = [{'team': t, **s} for t, s in standings[:10]]
+        formatted = [{'team': t, **s} for t, s in standings]
     else:
         # New format: [{team, points, gd}, ...]
-        formatted = standings[:10]
+        formatted = standings
     
     return jsonify({
         'standings': formatted,

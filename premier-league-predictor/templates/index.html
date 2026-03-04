@@ -930,7 +930,7 @@
 
         async function loadStandings() {
             try {
-                const response = await fetch(`/api/standings?league=${currentLeague}`);
+                const response = await fetch(`/api/standings?league=${currentLeague}&t=${Date.now()}`);
                 const data = await response.json();
                 
                 const tbody = document.getElementById('standingsBody');
