@@ -5,6 +5,7 @@ from scipy.stats import poisson
 import os
 from datetime import datetime
 import json
+import threading
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -596,6 +597,17 @@ def get_status():
         'league': league
     })
 
+
+def _preload():
+    """Preload Premier League data on startup so it's ready before first request."""
+    try:
+        print("🔄 Preloading Premier League data...")
+        get_cached_data("Premier League")
+        print("✅ Premier League data ready")
+    except Exception as e:
+        print(f"❌ Preload failed: {e}")
+
+threading.Thread(target=_preload, daemon=True).start()
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
