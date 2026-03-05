@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MatchIQ - AI Football Predictor</title>
+    <link rel="icon" type="image/png" href="/static/images/favicon-96x96.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -50,16 +51,10 @@
             box-shadow: var(--shadow);
         }
 
-        .logo {
-            font-size: 2.5em;
+        .logo img {
+            height: 150px;
+            width: auto;
             margin-bottom: 5px;
-        }
-
-        header h1 {
-            font-size: 1.8em;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 8px;
         }
 
         header p {
@@ -656,8 +651,9 @@
 <body>
     <div class="container">
         <header>
-            <div class="logo">⚽</div>
-            <h1>MatchIQ</h1>
+            <div class="logo">
+                <img src="/static/images/matchiqlogo.png" alt="MatchIQ">
+            </div>
             <p>AI Football Predictor • Dixon-Coles Model</p>
             
             <div class="header-controls">
