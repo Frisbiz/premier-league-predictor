@@ -639,16 +639,38 @@
         }
 
         @media (max-width: 700px) {
-            .container { padding: 10px; }
-            .predictor-card { padding: 20px; }
-            .match-setup { grid-template-columns: 1fr; gap: 15px; }
+            .container { padding: 8px; }
+            .logo img { height: 70px; }
+            header { padding: 18px 10px; }
+            header p { font-size: 0.85em; }
+            select.league-select { min-width: unset; width: 100%; font-size: 0.9em; }
+            .data-badge { font-size: 0.75em; padding: 6px 12px; }
+
+            .standings-card { padding: 15px; overflow-x: auto; }
+            .standings-table { font-size: 0.8em; min-width: unset; }
+            .standings-table th, .standings-table td { padding: 8px 6px; }
+
+            .predictor-card { padding: 15px; }
+            .match-setup { grid-template-columns: 1fr; gap: 12px; }
             .vs { margin: 0 auto; }
-            .score-number { font-size: 2.5em; }
+            .team-badge { width: 55px; height: 55px; font-size: 1.4em; }
+
+            .options-row { flex-direction: column; align-items: center; gap: 10px; }
+            .confidence-slider input[type="range"] { width: 120px; }
+
+            .score-display { gap: 10px; }
+            .score-number { font-size: 3em; }
+            .team-box h3 { font-size: 0.95em; }
+            .winner-badge { padding: 10px 20px; font-size: 0.9em; }
+
             .stats-grid { grid-template-columns: 1fr; }
-            .prob-grid { grid-template-columns: 1fr; }
-            .options-row { flex-direction: column; align-items: center; gap: 12px; }
-            .standings-table { font-size: 0.75em; }
-            .standings-table th, .standings-table td { padding: 6px 4px; }
+            .prob-grid { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+            .prob-box { padding: 10px 6px; }
+            .prob-value { font-size: 1.2em; }
+            .prob-label { font-size: 0.7em; }
+
+            .h2h-match { font-size: 0.8em; padding: 6px 10px; }
+            .share-section { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -831,9 +853,6 @@
                 <div class="share-section">
                     <button class="share-btn" onclick="sharePrediction()">
                         🔗 Copy Link
-                    </button>
-                    <button class="share-btn" onclick="tweetPrediction()">
-                        🐦 Tweet
                     </button>
                 </div>
             </div>
@@ -1229,17 +1248,6 @@
             navigator.clipboard.writeText(url.toString()).then(() => {
                 alert('Link copied to clipboard!');
             });
-        }
-
-        function tweetPrediction() {
-            if (!lastPrediction) return;
-            
-            const text = `⚽ ${lastPrediction.home_team} ${lastPrediction.predicted_home_goals} - ${lastPrediction.predicted_away_goals} ${lastPrediction.away_team}\n\n` +
-                        `Predicted by AI: ${lastPrediction.predicted_winner} (${lastPrediction.confidence} confidence)\n\n` +
-                        `#PremierLeague #AI #FootballPrediction`;
-            
-            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-            window.open(url, '_blank');
         }
 
         // Initialize
