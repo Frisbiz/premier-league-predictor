@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchIQ - Premier League AI Predictor</title>
+    <link rel="icon" type="image/png" href="/static/images/favicon-96x96.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0 30px;
+        }
+
+        .logo img {
+            height: 180px;
+            width: auto;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1em;
+        }
+
+        .data-badge {
+            display: inline-block;
+            background: rgba(0,212,255,0.2);
+            color: #00d4ff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 15px;
+            border: 1px solid rgba(0,212,255,0.3);
+        }
+
+        .predictor-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+
+        .match-setup {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .team-selector {
+            text-align: center;
+        }
+
+        .team-selector label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        select {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 1.1em;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            background: rgba(0,0,0,0.3);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 50px;
+        }
+
+        select:hover, select:focus {
+            border-color: #00d4ff;
+            outline: none;
+            background: rgba(0,0,0,0.4);
+        }
+
+        select option {
+            background: #1a1a2e;
+            color: white;
+            padding: 10px;
+        }
+
+        .vs {
+            font-size: 1.8em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .predict-btn {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2cbf 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .predict-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0,212,255,0.4);
+        }
+
+        .predict-btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .predict-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .predict-btn:hover::before {
+            left: 100%;
+        }
+
+        .result {
+            display: none;
+            margin-top: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(0,212,255,0.1) 0%, rgba(123,44,191,0.1) 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .team-box {
+            text-align: center;
+            flex: 1;
+        }
+
+        .team-box h3 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .score-number {
+            font-size: 5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        .vs-small {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .winner-banner {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .winner-badge {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            color: white;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2em;
+            box-shadow: 0 10px 30px rgba(0,212,255,0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stats-card {
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 16px;
+        }
+
+        .stats-card h4 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: white;
+        }
+
+        .confidence-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .confidence-section p {
+            margin-bottom: 15px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .confidence-bar {
+            height: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            border-radius: 6px;
+            transition: width 1s ease-out;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1em;
+        }
+
+        .error {
+            display: none;
+            background: rgba(255,100,100,0.2);
+            color: #ff9999;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,100,100,0.3);
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9em;
+        }
+
+        footer a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+
+        @media (max-width: 700px) {
+            .match-setup {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .vs {
+                transform: rotate(90deg);
+            }
+            
+            .score-number {
+                font-size: 3.5em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo img {
+                height: 130px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="/static/images/matchiqlogo.png" alt="MatchIQ">
+            </div>
+            <p>Machine learning predictions using 10+ seasons of data</p>
+            <div class="data-badge">📊 Trained on 4,000+ matches</div>
+        </header>
+
+        <div class="predictor-card">
+            <div class="match-setup">
+                <div class="team-selector">
+                    <label>Home Team</label>
+                    <select id="homeTeam">
+                        <option value="">Select team...</option>
+                    </select>
+                </div>
+                <div class="vs">VS</div>
+                <div class="team-selector">
+                    <label>Away Team</label>
+                    <select id="awayTeam">
+                        <option value="">Select team...</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="predict-btn" onclick="predictMatch()" id="predictBtn">
+                🔮 Predict Match
+            </button>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing historical data and team form...</p>
+            </div>
+
+            <div class="error" id="error"></div>
+
+            <div class="result" id="result">
+                <h2>🎯 Prediction Result</h2>
+                
+                <div class="score-display">
+                    <div class="team-box">
+                        <h3 id="resultHomeTeam">Team A</h3>
+                        <div class="score-number" id="homeScore">2</div>
+                    </div>
+                    <div class="vs-small">VS</div>
+                    <div class="team-box">
+                        <h3 id="resultAwayTeam">Team B</h3>
+                        <div class="score-number" id="awayScore">1</div>
+                    </div>
+                </div>
+
+                <div class="winner-banner">
+                    <div class="winner-badge" id="winnerBadge">Home Win</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stats-card">
+                        <h4>🏠 Home Stats</h4>
+                        <div class="stat-row">
+                            <span class="stat-label">Avg Goals Scored</span>
+                            <span class="stat-value" id="homeAvgGS">1.8</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Avg Goals Conceded</span>
+                            <span class="stat-value" id="homeAvgGC">0.9</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Home Win Rate</span>
+                            <span class="stat-value" id="homeWinRate">65%</span>
+                        </div>
+                    </div>
+                    <div class="stats-card">
+                        <h4>✈️ Away Stats</h4>
+                        <div class="stat-row">
+                            <span class="stat-label">Avg Goals Scored</span>
+                            <span class="stat-value" id="awayAvgGS">1.2</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Avg Goals Conceded</span>
+                            <span class="stat-value" id="awayAvgGC">1.5</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Away Win Rate</span>
+                            <span class="stat-value" id="awayWinRate">35%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="confidence-section">
+                    <p>🤖 AI Confidence: <span id="confidenceValue">75%</span></p>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidenceFill" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>⚠️ For entertainment only. Predictions based on historical data.</p>
+            <p>Data: football-data.co.uk | Model: Gradient Boosting | <a href="#" onclick="window.open('https://github.com', '_blank')">GitHub</a></p>
+        </footer>
+    </div>
+
+    <script>
+        let teams = [];
+
+        async function loadTeams() {
+            try {
+                const response = await fetch('/api/teams');
+                const data = await response.json();
+                teams = data.teams;
+                
+                const homeSelect = document.getElementById('homeTeam');
+                const awaySelect = document.getElementById('awayTeam');
+                
+                teams.forEach(team => {
+                    homeSelect.innerHTML += `<option value="${team}">${team}</option>`;
+                    awaySelect.innerHTML += `<option value="${team}">${team}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading teams:', error);
+            }
+        }
+
+        async function predictMatch() {
+            const homeTeam = document.getElementById('homeTeam').value;
+            const awayTeam = document.getElementById('awayTeam').value;
+            const predictBtn = document.getElementById('predictBtn');
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            const error = document.getElementById('error');
+
+            error.classList.remove('show');
+            result.classList.remove('show');
+
+            if (!homeTeam || !awayTeam) {
+                error.textContent = '⚠️ Please select both teams';
+                error.classList.add('show');
+                return;
+            }
+
+            if (homeTeam === awayTeam) {
+                error.textContent = '⚠️ Home and away teams must be different';
+                error.classList.add('show');
+                return;
+            }
+
+            predictBtn.disabled = true;
+            loading.classList.add('show');
+
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        home_team: homeTeam,
+                        away_team: awayTeam
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('resultHomeTeam').textContent = data.home_team;
+                    document.getElementById('resultAwayTeam').textContent = data.away_team;
+                    document.getElementById('homeScore').textContent = data.predicted_home_goals;
+                    document.getElementById('awayScore').textContent = data.predicted_away_goals;
+                    
+                    const badge = document.getElementById('winnerBadge');
+                    badge.textContent = data.predicted_winner === 'Draw' ? '🤝 Draw' : `🏆 ${data.predicted_winner} Win`;
+                    
+                    document.getElementById('confidenceValue').textContent = data.confidence;
+                    document.getElementById('confidenceFill').style.width = data.confidence;
+                    
+                    if (data.home_stats) {
+                        document.getElementById('homeAvgGS').textContent = data.home_stats.avg_goals_scored;
+                        document.getElementById('homeAvgGC').textContent = data.home_stats.avg_goals_conceded;
+                        document.getElementById('homeWinRate').textContent = data.home_stats.win_rate;
+                    }
+                    
+                    if (data.away_stats) {
+                        document.getElementById('awayAvgGS').textContent = data.away_stats.avg_goals_scored;
+                        document.getElementById('awayAvgGC').textContent = data.away_stats.avg_goals_conceded;
+                        document.getElementById('awayWinRate').textContent = data.away_stats.win_rate;
+                    }
+                    
+                    result.classList.add('show');
+                    result.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    error.textContent = '⚠️ ' + (data.error || 'An error occurred');
+                    error.classList.add('show');
+                }
+            } catch (err) {
+                error.textContent = '⚠️ Failed to get prediction. Please try again.';
+                error.classList.add('show');
+            } finally {
+                predictBtn.disabled = false;
+                loading.classList.remove('show');
+            }
+        }
+
+        loadTeams();
+    </script>
+</body>
+</html>
