@@ -199,7 +199,8 @@
         .zone-europa .pos-cell::before { background: var(--orange); }
         .zone-conference .pos-cell::before { background: var(--green); }
         .zone-rel .pos-cell::before { background: var(--red); }
-        .team-cell { font-weight: 500; }
+        .team-cell { font-weight: 500; display: flex; align-items: center; gap: 8px; }
+        .team-cell img { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
         .pts-cell { font-weight: 700; color: var(--accent-bright); }
         .gd-cell { color: var(--text-sub); font-size: 0.85em; }
 
@@ -829,10 +830,13 @@
                     else if (pos === 7) zone = 'zone-conference';
                     else if (pos > total - 3) zone = 'zone-rel';
 
+                    const badge = TEAM_DATA[s.team]?.badge
+                        ? `<img src="${TEAM_DATA[s.team].badge}" alt="" onerror="this.style.display='none'">`
+                        : '';
                     tbody.innerHTML += `
                         <tr class="${zone}">
                             <td class="pos-cell">${pos}</td>
-                            <td class="team-cell">${s.team}</td>
+                            <td class="team-cell">${badge}${s.team}</td>
                             <td class="pts-cell">${Math.round(s.points * 10) / 10}</td>
                             <td class="gd-cell">${s.gd > 0 ? '+' : ''}${Math.round(s.gd * 10) / 10}</td>
                         </tr>
